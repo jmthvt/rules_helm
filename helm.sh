@@ -38,5 +38,5 @@ fi
 export HELM_HOME="$(pwd)/.helm"
 export PATH="$(dirname $BINARY):$PATH"
 
-cd "${BUILD_WORKING_DIRECTORY:-}"
+cd "${BUILD_WORKSPACE_DIRECTORY:-}"
 helm $*
