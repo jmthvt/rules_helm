@@ -8,8 +8,8 @@ echo "export BUILD_USER=$$(grep BUILD_USER bazel-out/stable-status.txt | cut -d 
 cat <<EOF >> $@
 #export RUNFILES_LIB_DEBUG=1 # For runfiles debugging
 
-export HELM=\$$(rlocation com_github_deviavir_rules_helm/helm)
-PATH=\$$(dirname \$$HELM):\$$PATH
+export HELM=\\$$(rlocation com_github_deviavir_rules_helm/helm)
+PATH=\\$$(dirname \\$$HELM):\\$$PATH
 """
 
 def helm_chart(name, srcs, update_deps = False, repositories = None):
@@ -149,12 +149,12 @@ mkdir -p .helm/cache .helm/config .helm/data
 """ + "\n".join(repo_adds) + """
 export CHARTLOC=""" + chartloc + """
 EXPLICIT_NAMESPACE=""" + namespace + """
-NAMESPACE=\$${EXPLICIT_NAMESPACE:-\$$NAMESPACE}
-export NS=\$${NAMESPACE:-\$${BUILD_USER}}
-if [ "\$$1" == "upgrade" ]; then
-    helm \$$@ """ + release_name + " \$$CHARTLOC --namespace \$$NS " + set_version + "" + set_params + " " + values_param + """
+NAMESPACE=\\$${EXPLICIT_NAMESPACE:-\\$$NAMESPACE}
+export NS=\\$${NAMESPACE:-\\$${BUILD_USER}}
+if [ "\\$$1" == "upgrade" ]; then
+    helm \\$$@ """ + release_name + " \\$$CHARTLOC --namespace \\$$NS " + set_version + "" + set_params + " " + values_param + """
 else
-    helm \$$@ """ + release_name + " --namespace \$$NS " + """
+    helm \\$$@ """ + release_name + " --namespace \\$$NS " + """
 fi
 rm -rf .helm
 EOF"""
