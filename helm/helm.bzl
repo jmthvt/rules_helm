@@ -12,7 +12,7 @@ export HELM=\\$$(rlocation com_github_deviavir_rules_helm/helm)
 PATH=\\$$(dirname \\$$HELM):\\$$PATH
 """
 
-def helm_chart(name, srcs, update_deps = False, repositories = None):
+def helm_chart(name, srcs, update_deps = False, repositories = None, **kwargs):
     """Defines a helm chart (directory containing a Chart.yaml).
 
     Args:
@@ -26,6 +26,7 @@ def helm_chart(name, srcs, update_deps = False, repositories = None):
     package_flags = ""
     repo_adds = []
     counter = 0
+    tags = kwargs.get("tags", None)
     if repositories:
         for repo in repositories:
             counter += 1
@@ -35,7 +36,7 @@ def helm_chart(name, srcs, update_deps = False, repositories = None):
         package_flags = "--dependency-update"
     native.filegroup(
         name = filegroup_name,
-        srcs = srcs
+        srcs = srcs,
     )
     native.genrule(
         name = name,
@@ -61,8 +62,8 @@ mv *tgz $@
 rm -rf .helm
 """.format(
             repo_adds = "\n".join(repo_adds),
-            package_flags = package_flags
-        )
+            package_flags = package_flags,
+        ),
     )
 
 def _build_helm_set_args(values):
@@ -81,7 +82,7 @@ def _helm_cmd(cmd, args, name, helm_cmd_name, values_yaml = None, values = None)
         srcs = [helm_cmd_name],
         deps = ["@bazel_tools//tools/bash/runfiles"],
         data = binary_data,
-        args = args
+        args = args,
     )
 
 def helm_release(name, release_name, chart, values_yaml = None, values = None, repository = None, version = None, namespace = ""):
@@ -157,7 +158,7 @@ else
     helm \\$$@ """ + release_name + " --namespace \\$$NS " + """
 fi
 rm -rf .helm
-EOF"""
+EOF""",
     )
     _helm_cmd("install", ["upgrade", "--install"], name, helm_cmd_name, values_yaml, values)
     _helm_cmd("install.wait", ["upgrade", "--install", "--wait"], name, helm_cmd_name, values_yaml, values)
