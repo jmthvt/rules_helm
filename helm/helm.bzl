@@ -27,6 +27,7 @@ def helm_chart(name, srcs, update_deps = False, repositories = None, **kwargs):
     repo_adds = []
     counter = 0
     tags = kwargs.get("tags", None)
+    maybe_manual = ["manual"] if "manual" in tags else []
     if repositories:
         for repo in repositories:
             counter += 1
@@ -37,12 +38,14 @@ def helm_chart(name, srcs, update_deps = False, repositories = None, **kwargs):
     native.filegroup(
         name = filegroup_name,
         srcs = srcs,
+        tags = [] + maybe_manual,
     )
     native.genrule(
         name = name,
         srcs = [filegroup_name],
         outs = ["%s_chart.tar.gz" % name],
         tools = ["@com_github_jmthvt_rules_helm//:helm"],
+        tags = [] + maybe_manual,
         cmd = """
 # find Chart.yaml in the filegroup
 CHARTLOC=missing
