@@ -25,9 +25,9 @@ In your Bazel `WORKSPACE` file add this repository as a dependency:
 
 ```
 git_repository(
-    name = "com_github_deviavir_rules_helm",
+    name = "com_github_jmthvt_rules_helm",
     tag = "0.0.1",
-    remote = "https://github.com/deviavir/rules_helm.git",
+    remote = "https://github.com/jmthvt/rules_helm.git",
 )
 ```
 
@@ -35,7 +35,7 @@ Then in your `BUILD` files include the `helm_chart` and/or `helm_release` rules:
 
 `charts/a-great-chart/zBUILD`:
 ```python
-load("@com_github_deviavir_rules_helm//:helm.bzl", "helm_chart")
+load("@com_github_jmthvt_rules_helm//:helm.bzl", "helm_chart")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -49,7 +49,7 @@ Referencing the chart with helm_release:
 
 `BUILD`:
 ```python
-load("@com_github_deviavir_rules_helm//:helm.bzl", "helm_release")
+load("@com_github_jmthvt_rules_helm//:helm.bzl", "helm_release")
 
 helm_release(
     name = "a_great_release",

@@ -2,13 +2,13 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 
 HELM_CMD_PREFIX = """
 echo "#!/usr/bin/env bash" > $@
-cat $(location @com_github_deviavir_rules_helm//:runfiles_bash) >> $@
+cat $(location @com_github_jmthvt_rules_helm//:runfiles_bash) >> $@
 echo "export NAMESPACE=$$(grep NAMESPACE bazel-out/stable-status.txt | cut -d ' ' -f 2)" >> $@
 echo "export BUILD_USER=$$(grep BUILD_USER bazel-out/stable-status.txt | cut -d ' ' -f 2)" >> $@
 cat <<EOF >> $@
 #export RUNFILES_LIB_DEBUG=1 # For runfiles debugging
 
-export HELM=\\$$(rlocation com_github_deviavir_rules_helm/helm)
+export HELM=\\$$(rlocation com_github_jmthvt_rules_helm/helm)
 PATH=\\$$(dirname \\$$HELM):\\$$PATH
 """
 
@@ -30,8 +30,8 @@ def helm_chart(name, srcs, update_deps = False, repositories = None, **kwargs):
     if repositories:
         for repo in repositories:
             counter += 1
-            repo_adds.append("$(location @com_github_deviavir_rules_helm//:helm) repo add bazel{} {}".format(counter, repo))
-        repo_adds.append("$(location @com_github_deviavir_rules_helm//:helm) repo update")
+            repo_adds.append("$(location @com_github_jmthvt_rules_helm//:helm) repo add bazel{} {}".format(counter, repo))
+        repo_adds.append("$(location @com_github_jmthvt_rules_helm//:helm) repo update")
     if update_deps:
         package_flags = "--dependency-update"
     native.filegroup(
@@ -42,7 +42,7 @@ def helm_chart(name, srcs, update_deps = False, repositories = None, **kwargs):
         name = name,
         srcs = [filegroup_name],
         outs = ["%s_chart.tar.gz" % name],
-        tools = ["@com_github_deviavir_rules_helm//:helm"],
+        tools = ["@com_github_jmthvt_rules_helm//:helm"],
         cmd = """
 # find Chart.yaml in the filegroup
 CHARTLOC=missing
@@ -57,7 +57,7 @@ export XDG_CONFIG_HOME=".helm/config"
 export XDG_DATA_HOME=".helm/data"
 mkdir -p .helm/cache .helm/config .helm/data
 {repo_adds}
-$(location @com_github_deviavir_rules_helm//:helm) package {package_flags} $$CHARTLOC
+$(location @com_github_jmthvt_rules_helm//:helm) package {package_flags} $$CHARTLOC
 mv *tgz $@
 rm -rf .helm
 """.format(
@@ -71,7 +71,7 @@ def _build_helm_set_args(values):
     return " ".join(set_args)
 
 def _helm_cmd(cmd, args, name, helm_cmd_name, values_yaml = None, values = None):
-    binary_data = ["@com_github_deviavir_rules_helm//:helm"]
+    binary_data = ["@com_github_jmthvt_rules_helm//:helm"]
     if values_yaml:
         binary_data.append(values_yaml)
     if values:
@@ -107,7 +107,7 @@ def helm_release(name, release_name, chart, values_yaml = None, values = None, r
         namespace: The namespace to install the release into. If empty will default the NAMESPACE environment variable and will fall back the the current username (via BUILD_USER).
     """
     helm_cmd_name = name + "_run_helm_cmd.sh"
-    genrule_srcs = ["@com_github_deviavir_rules_helm//:runfiles_bash"]
+    genrule_srcs = ["@com_github_jmthvt_rules_helm//:runfiles_bash"]
 
     # build --set params
     set_params = _build_helm_set_args(values)
