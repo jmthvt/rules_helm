@@ -26,7 +26,7 @@ def helm_chart(name, srcs, update_deps = False, repositories = None, **kwargs):
     package_flags = ""
     repo_adds = []
     counter = 0
-    tags = kwargs.get("tags", None)
+    tags = kwargs.get("tags", "")
     maybe_manual = ["manual"] if "manual" in tags else []
     if repositories:
         for repo in repositories:
@@ -88,7 +88,7 @@ def _helm_cmd(cmd, args, name, helm_cmd_name, values_yaml = None, values = None)
         args = args,
     )
 
-def helm_release(name, release_name, chart, values_yaml = None, values = None, repository = None, version = None, namespace = ""):
+def helm_release(name, release_name, chart, values_yaml = None, values = None, repository = None, version = None, namespace = "", **kwargs):
     """Defines a helm release.
 
     A given target has the following executable targets generated:
@@ -120,6 +120,8 @@ def helm_release(name, release_name, chart, values_yaml = None, values = None, r
     set_version = ""
 
     repo_adds = []
+    tags = kwargs.get("tags", "")
+    maybe_manual = ["manual"] if "manual" in tags else []
     if repository:
         repo_name = "bazel1"
         chart_name = chart
@@ -145,6 +147,7 @@ def helm_release(name, release_name, chart, values_yaml = None, values = None, r
         stamp = True,
         srcs = genrule_srcs,
         outs = [helm_cmd_name],
+        tags = [] + maybe_manual,
         cmd = HELM_CMD_PREFIX + """
 export XDG_CACHE_HOME=".helm/cache"
 export XDG_CONFIG_HOME=".helm/config"
