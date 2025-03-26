@@ -12,14 +12,14 @@ def helm_repositories():
 
     http_archive(
         name = "helm",
-        sha256 = "ff4ac230b73a15d66770a65a037b07e08ccbce6833fbd03a5b84f06464efea45",
-        urls = ["https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz"],
+        sha256 = "90c28792a1eb5fb0b50028e39ebf826531ebfcf73f599050dbd79bab2f277241",
+        urls = ["https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz"],
         build_file = "@com_github_jmthvt_rules_helm//:helm.BUILD",
     )
 
     http_archive(
         name = "helm_osx",
-        sha256 = "3399430b0fdfa8c840e77ddb4410d762ae64f19924663dbdd93bcd0e22704e0b",
-        urls = ["https://get.helm.sh/helm-v3.3.0-darwin-amd64.tar.gz"],
+        sha256 = "3e240238c7a3a10efd37b8e16615b28e94ba5db5957247bb42009ba6d52f76e9",
+        urls = ["https://get.helm.sh/helm-v3.17.2-darwin-amd64.tar.gz"],
         build_file = "@com_github_jmthvt_rules_helm//:helm.BUILD",
     )
